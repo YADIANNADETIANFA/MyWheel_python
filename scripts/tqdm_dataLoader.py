@@ -60,8 +60,41 @@ def dataloader_2():
         pbar.set_description('gpu reserved: {mem}'.format(mem=mem))
 
 
+def dataloader_3():
+    """
+    collate_fn是DataLoader类的一个参数，用于指定如何将多个数据样本整合到一个batch中。
+    即在每个epoch中迭代DataLoader来获取batch时，collate_fn将在这个batch中被调用，将数据样本列表(从Dataset.__getitem__返回的)转换为DataLoader的输出批次格式。
+    """
+    # 自定义一个简单的Dataset
+    class MyDataset(Dataset):
+        def __init__(self, data):
+            self.data = data
+
+        def __len__(self):
+            return len(self.data)
+
+        def __getitem__(self, item):
+            return self.data[item]
+
+    # 自定义collate_fn函数，将样本列表合并成一个batch
+    def my_collate_fn(batch):
+        # 在这个例子中，我们简单地把样本合并成一个列表
+        return batch
+
+    # 创建一个数据集实例
+    data = list(range(100))
+    dataset = MyDataset(data)
+
+    # 创建一个DataLoader实例，并指定collate_fn
+    data_loader = DataLoader(dataset=dataset, batch_size=4, collate_fn=my_collate_fn)
+
+    # 迭代DataLoader来获取batch
+    for batch in data_loader:
+        print(batch)
+
+
 if __name__ == "__main__":
-    dataloader_2()
+    dataloader_3()
     print('done')
 
 
